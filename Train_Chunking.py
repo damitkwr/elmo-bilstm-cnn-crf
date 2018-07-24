@@ -33,9 +33,9 @@ logger.addHandler(ch)
 #
 ######################################################
 datasets = {
-    'conll2000_chunking':                                   #Name of the dataset
-        {'columns': {0:'tokens', 1:'POS', 2:'chunk_BIO'},   #CoNLL format for the input data. Column 0 contains tokens, column 1 contains POS and column 2 contains chunk information using BIO encoding
-         'label': 'chunk_BIO',                              #Which column we like to predict
+    'deid':                                   #Name of the dataset
+        {'columns': {0:'tokens', 1:'NER_BIO'},   
+         'label': 'NER_BIO',                              #Which column we like to predict
          'evaluate': True,                                  #Should we evaluate on this task? Set true always for single task setups
          'commentSymbol': None}                             #Lines in the input data starting with this string will be skipped. Can be used to skip comments
 }
@@ -45,15 +45,15 @@ datasets = {
 
 # :: Prepares the dataset to be used with the LSTM-network. Creates and stores cPickle files in the pkl/ folder ::
 
-embeddings_file = 'embeddings/komninos_english_embeddings.gz'
+embeddings_file = 'embeddings/bioEmbeddings.txt'
 elmo_options_file= 'https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway_5.5B/elmo_2x4096_512_2048cnn_2xhighway_5.5B_options.json'
 elmo_weight_file = 'https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x4096_512_2048cnn_2xhighway_5.5B/elmo_2x4096_512_2048cnn_2xhighway_5.5B_weights.hdf5'
 elmo_mode = 'average'
-elmo_cuda_device = -1 #Which GPU to use. -1 for CPU
+elmo_cuda_device = 0 #Which GPU to use. -1 for CPU
 
 embLookup = ELMoWordEmbeddings(embeddings_file, elmo_options_file, elmo_weight_file, elmo_mode, elmo_cuda_device)
 # You can use a cache to precompute the ELMo embeddings once. See Create_ELMo_Cache.py for an example.
-embLookup.loadCache('embeddings/elmo_cache_conll2000_chunking.pkl')
+embLookup.loadCache('embeddings/elmo_cache_deid.pkl')
 
 pickleFile = perpareDataset(datasets, embLookup)
 
@@ -75,7 +75,7 @@ model = ELMoBiLSTM(params)
 model.setMappings(mappings)
 model.setDataset(datasets, data)
 model.modelSavePath = "models/[ModelName]_[DevScore]_[TestScore]_[Epoch].h5"
-model.fit(epochs=25)
+model.fit(epochs=40)
 
 
 

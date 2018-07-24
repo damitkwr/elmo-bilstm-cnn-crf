@@ -486,6 +486,7 @@ class ELMoBiLSTM:
     
    
     def computeScore(self, modelName, devMatrix, testMatrix):
+        ## TODO: Have to change here
         if self.labelKeys[modelName].endswith('_BIO') or self.labelKeys[modelName].endswith('_IOBES') or self.labelKeys[modelName].endswith('_IOB'):
             return self.computeF1Scores(modelName, devMatrix, testMatrix)
         else:
@@ -510,6 +511,7 @@ class ELMoBiLSTM:
         return dev_acc, test_acc   
         
         
+    ## TODO: Change it here as well
     def computeF1(self, modelName, sentences):
         labelKey = self.labelKeys[modelName]
         model = self.models[modelName]
@@ -521,6 +523,7 @@ class ELMoBiLSTM:
         labelKey = self.labelKeys[modelName]
         encodingScheme = labelKey[labelKey.index('_')+1:]
         
+        # TODO: Have to change from BIOF1Validation
         pre, rec, f1 = BIOF1Validation.compute_f1(predLabels, correctLabels, idx2Label, 'O', encodingScheme)
         pre_b, rec_b, f1_b = BIOF1Validation.compute_f1(predLabels, correctLabels, idx2Label, 'B', encodingScheme)
         
